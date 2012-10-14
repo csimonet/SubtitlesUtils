@@ -32,9 +32,16 @@ public class VideoObj {
 		String [] splitArray = tmp.split("\\.");//Splits the string by using the dot as a regex
 		
 		tmpTitle = splitArray[0].toLowerCase();//the first element of array is always the title
+		if(tmpTitle.startsWith("the")||tmpTitle.startsWith("2")){
+			//This is necessary if name of file is like this The.Big.Bang.Theory.S06E02.HDTV.x264-LOL.mp4
+			tmpTitle = new StringBuilder(tmpTitle).append(".").append(splitArray[1]).toString();
+			
+		}
 		
-		String pattern = "(s[0-9]{2}e[0-9]{2}|e[0-9]*)" ;//search pattern like this "s05e02" or like this "e366"
-		
+		String pattern = "(s[0-9]{2}e[0-9]{2}|e[0-9]+)" ;//search pattern like this "s05e02" or like this "e366"
+		//e[0-9]*: prendeva la "e" seguita da 0 o più occorrenze numeriche e quindi se gli altri elementi 
+		//dell'array contenevano una "e" veniva presa.
+		//e[0-9]+:prende la "e" seguita da almeno 1 o più occorrenze numeriche. SCELTA GIUSTA
 		
 		Pattern MY_PATTERN = Pattern.compile(pattern);
 		for (int i = 1; i< splitArray.length; i++){
