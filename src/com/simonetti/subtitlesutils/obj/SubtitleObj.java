@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 
 public class SubtitleObj {
 	
-	File sub;
-	String title;
-	String episode;
+	private File sub;
+	private String title;
+	private String episode;
 	
 	
 	/**
@@ -27,18 +27,23 @@ public class SubtitleObj {
 		String tmpTitle= null;
 		String tmpEpisode= null;
 		
-		tmp = this.sub.getName();//Example: "Fringe.s05e02.sub.itasa.srt"
+		//Example: "Fringe.s05e02.sub.itasa.srt"
+		tmp = this.sub.getName();
 		
-		String [] splitArray = tmp.split("\\.");//Splits the string by using the dot as a regex
+		//Splits the string by using the dot as a regex
+		String [] splitArray = tmp.split("\\.");
 		
-		tmpTitle = splitArray[0].toLowerCase();//the first element of array is always the title
+		//the first element of array is always the title
+		tmpTitle = splitArray[0].toLowerCase();
+		
 		if(tmpTitle.startsWith("the")||tmpTitle.startsWith("2")){
-			//This is necessary if name of file is like this The.Big.Bang.Theory.S06E02.HDTV.x264-LOL.mp4
-			tmpTitle = new StringBuilder(tmpTitle).append(".").append(splitArray[1]).toString();
 			
+			//This is necessary if name of file is like this The.Big.Bang.Theory.S06E02.HDTV.x264-LOL.mp4
+			tmpTitle = new StringBuilder(tmpTitle).append(".").append(splitArray[1]).toString();			
 		}
 		
-		String pattern = "(s[0-9]{2}e[0-9]{2}|e[0-9]+)" ;//search pattern like this "s05e02" or like this "e366"
+		//search pattern like this "s05e02" or like this "e366"
+		String pattern = "(s[0-9]{2}e[0-9]{2}|e[0-9]+)" ;
 		//e[0-9]*: prendeva la "e" seguita da 0 o più occorrenze numeriche e quindi se gli altri elementi 
 		//dell'array contenevano una "e" veniva presa.
 		//e[0-9]+:prende la "e" seguita da almeno 1 o più occorrenze numeriche. SCELTA GIUSTA
