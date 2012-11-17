@@ -16,7 +16,14 @@ import com.simonetti.extractzip.ExtractZIP;
 import com.simonetti.subtitlesutils.obj.SubtitleObj;
 import com.simonetti.subtitlesutils.obj.VideoObj;
 
-public class SubtitlesUtils {
+public final class SubtitlesUtils {
+	
+	/**
+	 * Private constructor - sonar tips (Utility class must have private constructor)
+	 */
+	private SubtitlesUtils (){		
+		
+	}
 	
 	/**
 	 * Enables or disables debug mode
@@ -33,6 +40,11 @@ public class SubtitlesUtils {
 	 * Video container
 	 */	
 	private static List <SubtitleObj> subContainer;
+	
+	/**
+	 * Dimensione Buffer - sonar tips(Magic Number)
+	 */	
+	private static int dimBuffer = 1024;
 
 	/**
 	 * @param args
@@ -63,45 +75,45 @@ public class SubtitlesUtils {
          while( (strLine = br.readLine()) != null)
              {
          		if (strLine.startsWith("SRC_EXTRACT:")){         			
-         			pathSrc = strLine.substring((strLine.indexOf(":")+1));
-         			if (debug)print(pathSrc);
+         			pathSrc = strLine.substring((strLine.indexOf(':')+1));
+         			if (debug){print(pathSrc);}
          			break;         			
          			}
          		}
          br.close();
          		
 		File folder = new File(pathSrc);
-//		File folder = new File("D:\\automatizzazione subs\\");
+		
 		
 		if (folder.exists()){
 			
-			if(debug) print("Path existence: "+folder.exists());
+			if(debug){ print("Path existence: "+folder.exists());}
 			
 //		  	long start=System.nanoTime();  //currentTimeMillis();			
-			if(debug) print("searchZIPFile - START");
+			if(debug){ print("searchZIPFile - START");}
 			search_extractZIPFile(folder);
-			if(debug) print("searchZIPFile - END");
+			if(debug){ print("searchZIPFile - END");}
 //			long end=System.nanoTime();
 //		    System.out.println("Tempo di esecuzione search_extractZIPFile() "+((end-start)/1000000)+" millisec.");
 		
 //		    start=System.nanoTime();  //currentTimeMillis();
-		    if(debug) print("searchSRTFile - START");
+		    if(debug){ print("searchSRTFile - START");}
 			searchSRTFile(folder);
-			if(debug) print("searchSRTFile - END");
+			if(debug){ print("searchSRTFile - END");}
 //			end=System.nanoTime();
 //		    System.out.println("Tempo di esecuzione searchSRTFile() "+((end-start)/1000000)+" millisec.");
 			
 //		    start=System.nanoTime();  //currentTimeMillis();
-		    if(debug) print("searchVideoFile - START");
+		    if(debug){ print("searchVideoFile - START");}
 			searchVIDEOFile(folder);
-			if(debug) print("searchVideoFile - END");
+			if(debug){ print("searchVideoFile - END");}
 //			end=System.nanoTime();
 //		    System.out.println("Tempo di esecuzione searchVIDEOFile() "+((end-start)/1000000)+" millisec.");
 			
 //		    start=System.nanoTime();  //currentTimeMillis();
-			if(debug) print("matchVIDEOandSUB - START");
+			if(debug){ print("matchVIDEOandSUB - START");}
 			matchVIDEOandSUB(folder);
-			if(debug) print("matchVIDEOandSUB - END");
+			if(debug){ print("matchVIDEOandSUB - END");}
 //			end=System.nanoTime();
 //		    System.out.println("Tempo di esecuzione matchVIDEOandSUB() "+((end-start)/1000000)+" millisec.");
 			
@@ -155,11 +167,10 @@ public class SubtitlesUtils {
 			}			
 		}
 		
-		if(debug) print("Scorrimento subContainer");
+		if(debug){ print("Scorrimento subContainer");}
 		for (SubtitleObj obj: subContainer){			
 			print("Titolo:"+obj.getTitle()+" - Episodio:"+obj.getEpisode());//+" - Path:"+obj.getSub().getPath());			
-		}
-		
+		}		
 	}
 	
 	/**
@@ -183,7 +194,7 @@ public class SubtitlesUtils {
 			}
 		}
 		
-		if(debug) print("Scorrimento videoContainer");
+		if(debug){ print("Scorrimento videoContainer");}
 		for (VideoObj obj: videoContainer){			
 			print("Titolo:"+obj.getTitle()+" - Episodio:"+obj.getEpisode());//+" - Path:"+obj.getVideo().getPath().substring(0,obj.getVideo().getPath().lastIndexOf(".")));			
 		}
@@ -202,8 +213,7 @@ public class SubtitlesUtils {
 				if(objVideo.getTitle().equals(objSub.getTitle())){
 					if(objVideo.getEpisode().equals(objSub.getEpisode())){
 						
-						if(debug)print("Video:"+objVideo.getVideo().getName());
-						if(debug)print("Subtitle:"+objSub.getSub().getName());						
+						if(debug){print(new StringBuilder("Video:").append(objVideo.getVideo().getName()).append("Subtitle:").append(objSub.getSub().getName()).toString());}
 						
 
 						String destinationFilePath = objVideo.getVideo().getPath().substring(0,objVideo.getVideo().getPath().lastIndexOf("."))+".srt";
@@ -212,16 +222,16 @@ public class SubtitlesUtils {
                         
                         
                         int b;
-                        byte buffer[] = new byte[1024];
+                        byte buffer[] = new byte[dimBuffer];
 
                         /*
                          * read the current entry from the zip file, extract it
                          * and write the extracted file.
                          */
                         FileOutputStream fos = new FileOutputStream(destinationFilePath);
-                        BufferedOutputStream bos = new BufferedOutputStream(fos,1024);
+                        BufferedOutputStream bos = new BufferedOutputStream(fos,dimBuffer);
 
-                        while ((b = bis.read(buffer, 0, 1024)) != -1) {
+                        while ((b = bis.read(buffer, 0, dimBuffer)) != -1) {
                      	   bos.write(buffer, 0, b);
                         }
                        
@@ -232,10 +242,16 @@ public class SubtitlesUtils {
                         //close the input stream.
                         bis.close();
                         
-                        if(debug)print("Rimozione:"+objSub.getSub().getName());
-        				objSub.getSub().delete();//delete subtitle from hardisk   
-        				itSub.remove();//remove "objSub" from subContainer using iterator.remove()
-        				break;// stop cycle; go to the next element of videoContainer        				
+                        if(debug){print("Rimozione:"+objSub.getSub().getName());}
+        				
+                        //delete subtitle from hardisk
+                        objSub.getSub().delete();   
+                        
+                        //remove "objSub" from subContainer using iterator.remove()
+                        itSub.remove();
+        				
+                        // stop cycle; go to the next element of videoContainer
+                        break;        				
 					}					
 				}			
 			}
