@@ -15,6 +15,11 @@ public class ExtractZIP {
 		// TODO Auto-generated constructor stub
 	}
 	
+	/**
+	 * Dimensione Buffer - sonar tips(Magic Number)
+	 */	
+	private static int dimBuffer = 1024;
+	
 	
 	/**
 	 * Extracts the contents of the zip file passed to it.
@@ -83,16 +88,16 @@ public class ExtractZIP {
                                
                                                                                                               
                                int b;
-                               byte buffer[] = new byte[1024];
+                               byte buffer[] = new byte[dimBuffer];
 
                                /*
                                 * read the current entry from the zip file, extract it
                                 * and write the extracted file.
                                 */
                                FileOutputStream fos = new FileOutputStream(destinationFilePath);
-                               BufferedOutputStream bos = new BufferedOutputStream(fos,1024);
+                               BufferedOutputStream bos = new BufferedOutputStream(fos,dimBuffer);
 
-                               while ((b = bis.read(buffer, 0, 1024)) != -1) {
+                               while ((b = bis.read(buffer, 0, dimBuffer)) != -1) {
                             	   bos.write(buffer, 0, b);
                                }
                               
@@ -181,16 +186,16 @@ public class ExtractZIP {
                                 
                                                                                                                
                                 int b;
-                                byte buffer[] = new byte[1024];
+                                byte buffer[] = new byte[dimBuffer];
 
                                 /*
                                  * read the current entry from the zip file, extract it
                                  * and write the extracted file.
                                  */
                                 FileOutputStream fos = new FileOutputStream(destinationFilePath);
-                                BufferedOutputStream bos = new BufferedOutputStream(fos, 1024);
+                                BufferedOutputStream bos = new BufferedOutputStream(fos, dimBuffer);
 
-                                while ((b = bis.read(buffer, 0, 1024)) != -1) {
+                                while ((b = bis.read(buffer, 0, dimBuffer)) != -1) {
                                 	bos.write(buffer, 0, b);
                                 }
                                
